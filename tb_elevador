@@ -1,0 +1,114 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity tb_elevador is
+end tb_elevador;
+
+architecture behavior of tb_elevador is
+
+    component elevador
+        Port (
+            clk  : in  STD_LOGIC;
+            rst  : in  STD_LOGIC;
+            B0   : in  STD_LOGIC;
+            B1   : in  STD_LOGIC;
+            B2   : in  STD_LOGIC;
+            B3   : in  STD_LOGIC;
+            Q    : out STD_LOGIC_VECTOR (1 downto 0);
+            DOOR : out STD_LOGIC
+        );
+    end component;
+
+    
+    signal clk  : STD_LOGIC := '0';
+    signal rst  : STD_LOGIC := '0';
+    signal B0   : STD_LOGIC := '0';
+    signal B1   : STD_LOGIC := '0';
+    signal B2   : STD_LOGIC := '0';
+    signal B3   : STD_LOGIC := '0';
+    signal Q    : STD_LOGIC_VECTOR (1 downto 0);
+    signal DOOR : STD_LOGIC;
+
+begin
+
+    -- instancia
+    uut: elevador port map (
+        clk => clk,
+        rst => rst,
+        B0  => B0,
+        B1  => B1,
+        B2  => B2,
+        B3  => B3,
+        Q   => Q,
+        DOOR => DOOR
+    );
+
+    -- CLOCK
+    clk_process: process
+    begin
+        while true loop
+            clk <= '0';
+            wait for 5 ns;
+            clk <= '1';
+            wait for 5 ns;
+        end loop;
+    end process;
+
+    -- ESTÍMULOS
+    stim_proc: process
+    begin
+
+        -- RESET
+        rst <= '1';
+        wait for 10 ns;
+        rst <= '0';
+
+    
+        -- TESTE 1: chamar 3
+        
+        B3 <= '1';
+        wait for 10 ns;
+        B3 <= '0';
+
+        wait for 100 ns;
+
+       
+        -- TESTE 2: chamar 1 e 2 juntos
+       
+        B1 <= '1';
+        B2 <= '1';
+        wait for 10 ns;
+        B1 <= '0';
+        B2 <= '0';
+
+        wait for 120 ns;
+
+  
+        -- TESTE 3: chamar 0 (descer tudo)
+  
+        B0 <= '1';
+        wait for 10 ns;
+        B0 <= '0';
+
+        wait for 120 ns;
+
+      
+        -- TESTE 4: vários pedidos
+     
+        B2 <= '1';
+        wait for 10 ns;
+        B2 <= '0';
+
+        wait for 20 ns;
+
+        B3 <= '1';
+        wait for 10 ns;
+        B3 <= '0';
+
+        wait for 150 ns;
+
+        wait;
+
+    end process;
+
+end;
